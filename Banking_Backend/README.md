@@ -1,73 +1,98 @@
-Implementarea acestei teme urmareste sa accentueze urmatoarele aspecte:
- - Realizarea unei structuri ce permite modificarea si scalarea acesteia
-intrun mod usor accesibil si comphresibil.
- - Implementarea a  3 design pattern-uri: 
-    1.Factory Pattern: A fost folosit pentru realizarea a claselor diferite,
-precum ce a conturilor(cel clasic si cel de economii),cat si a cardurilor(cel
-clasic si cel one time).
-    2.Command Pattern: Utilizat pentru genstionarea mai usoara a comenzilor
-primite ca si input.
-    3.Builder Pattern: Cu ajutorul acestia se construiesc tranzactiile, datorita
-faptului ca fiecare tranzactie este semnificativ diferita ca si structura.
+# 🏦 Banking System – Design Patterns Implementation  
 
-Programul este structurat astfel:
-    1.Account package:
-        Acesta contine clasele si interfata realizarii factory pattern-ului
-pentru conturi:
-        -Account(interface): Contine metodele necesare pentru utilizarea conturilor
-        -AccountFactory(Class): Contine o metoda ce returneaza un cont in functie de
-necesitate
-        -ClassicAccount(Class): Reprezinta clasa pentru un cont clasic
-        -SavingsAccount(Class): Reprezinta clasa pentru un cont de economii
+This project is an implementation of a **simplified banking system**, designed to highlight and apply three fundamental **design patterns**:  
 
-    2.Card package:
-        Acesta contine clasele si interfata necesara realizarii factory pattern-ului
-pentru carduri:
-        -Card(interface): Contine metodele necesare pentru utilizarea cardurilor
-        -CardFactory(Class): Contine o metoda ce returneaza un card in functie de
-necesitate
-        -ClassicCard(Class): Reprezinta clasa pentru un card clasic
-        -OneTimeUseCard(Class): Reprezinta clasa pentru un card cu use one time
+- **Factory Pattern** – for creating accounts and cards.  
+- **Command Pattern** – for handling commands received as input.  
+- **Builder Pattern** – for building complex transactions.  
 
-    3.CommandsCenter Package:
-        Acesta contine un package cu toate comenzile posibile, cat si o clasa
-ce reprezinta centrul de comenzi care interpretaza toate comenzile primite ca input
-si mai apoi acestea sunt executate la run time.
-        -Commands(Package): Pentru fiecare comanda exista o clasa definita specific,
-care aceasta este creata de catre CommandCenter, si mai apoi executata.Contine o interfata
-specifica command pattern-ului cu o metode execute() care are ca rol executarea comenzii.
-        -CommandCenter(Class): Este reprezentata de 2 metode principale, una care interpre-
-teaza comenzile din input si cea care le pune in aplicare pe datele noastre.
+The project structure was designed to be **scalable, modular, and easy to maintain**, providing a solid foundation for future development.  
 
-    4.OutputJson Package:
-        Contine toate clasele specifice comenzilor pentru a realiza output-ul.Acestea
-adauga intr-un ArrayList de ObjectNode care mai apoi la final este parcurs si afiseaza
-in fisierele de output rezultatele dupa rularea comenzilor.
+---
 
-    5.Transactions Package:
-        Toti userii au un instoric de tranzactii in care sunt adaugate toate tranzactiile si 
-modificiarile specifice unui user.
-        -Transaction(Package): Contine 2 metode cea de aflare a timestamp-ului specific pentru
-fiecare tranzactie cat si una de tip ObjectNode ce returneaza un obiect de tip ObjectNode ce
-reprezinta formatul unei tranzactii
+## ✨ Design Patterns Used  
 
-    6.Elements Class:
-        Reprezinta clasa ce contine userii cat si cursul valutar, acestea fiind astfel o banca.
-Fiecare User este tinut in memorie cu ajutorul unui HashMap in functie de adresa de mail asociata.
+### 🔹 Factory Pattern  
+Used to create objects of type **Account** and **Card** without exposing the instantiation logic in the main code:  
+- Accounts: `ClassicAccount`, `SavingsAccount`.  
+- Cards: `ClassicCard`, `OneTimeUseCard`.  
 
-    7.ExchangeRate Class:
-        Reprezinta cursul valutar asociat, acesta este reprezentat de un graf orientat pentru a obtine
-intr-un timp optim cursul cu ajutorul parcurgerii DFS a grafului.
+### 🔹 Command Pattern  
+Allows interpretation and execution of commands at runtime.  
+- All commands implement a `Command` interface with an `execute()` method.  
+- The `CommandCenter` interprets the input and runs the appropriate commands.  
 
-    8.User Class:
-        Reprezinta clasa specifica unui user, aceatsa contine un HashMap pentru fiecare cont in functie
-de IBAN, datele specifice user-ului precum nume, prenume, un HashMap ce retine toate aliasu-urile setate
-pentru diferite conturi, cat si un ArrayList de tranzactii ce retin tranzactiile specifice unui User.
+### 🔹 Builder Pattern  
+Used for **building transactions**, as they may have significantly different structures.  
 
+---
 
+## 📂 Project Structure  
 
-    Ca si functionare, in clasa main se instantieaza un obiect de tip CommandCenter, mai apoi ii este oferit
-inputul de comenzi asociat, iar la final este parcurs tot ArrayList-ul asociat output-urilor rezultat in urma 
-comenzilor si este adaugat in fiserele ascoiate fiecarui test.
-    
-        
+### 1. `account`  
+- **`Account` (interface)** – defines methods required for accounts.  
+- **`AccountFactory` (class)** – factory for creating accounts.  
+- **`ClassicAccount` / `SavingsAccount` (class)** – specific account implementations.  
+
+### 2. `card`  
+- **`Card` (interface)** – defines methods required for cards.  
+- **`CardFactory` (class)** – factory for creating cards.  
+- **`ClassicCard` / `OneTimeUseCard` (class)** – specific card implementations.  
+
+### 3. `commandscenter`  
+- **`Commands` (package)** – contains individual command classes, each implementing `execute()`.  
+- **`CommandCenter` (class)** – interprets commands from input and executes them.  
+
+### 4. `outputjson`  
+- Contains classes dedicated to generating output in JSON format.  
+- Results are stored in an `ArrayList<ObjectNode>` and exported at the end to output files.  
+
+### 5. `transactions`  
+- Stores transaction history for each user.  
+- Provides methods for generating timestamps and serializing transactions into an `ObjectNode`.  
+
+### 6. `Elements` (class)  
+- Represents the bank.  
+- Stores users (in a `HashMap` keyed by email) and the exchange rate system.  
+
+### 7. `ExchangeRate` (class)  
+- Represents exchange rates.  
+- Implemented as a **directed graph**, where currency conversions are computed via DFS traversal.  
+
+### 8. `User` (class)  
+- Represents a banking user.  
+- Stores:  
+  - accounts (in a `HashMap` keyed by IBAN),  
+  - personal data,  
+  - aliases for accounts,  
+  - transaction history (`ArrayList`).  
+
+---
+
+## ⚙️ How It Works  
+
+1. In `main`, a `CommandCenter` object is instantiated.  
+2. Input commands are provided.  
+3. Results are collected in an `ArrayList` of outputs.  
+4. At the end, outputs are written to JSON files corresponding to each test.  
+
+---
+
+## 🚀 Benefits of the Implementation  
+
+- **Scalability** – new account types, cards, or transactions can be added easily and independently.  
+- **Flexibility** – commands can be extended effortlessly by adding new classes to the `commands` package.  
+- **Separation of Concerns** – each package/class has a well-defined role.  
+- **Extensibility** – naturally supports new features (e.g., additional exchange rates, new transaction types).  
+
+---
+
+## 🛠️ Technologies Used  
+
+- **Java** (OOP, Collections, JSON handling)  
+- **Jackson** – for generating and managing JSON objects  
+- **Design Patterns**: Factory, Command, Builder  
+
+---
+
+👉 This project serves as a practical example for learning and applying design patterns in a real-world inspired context (simplified banking system).  
