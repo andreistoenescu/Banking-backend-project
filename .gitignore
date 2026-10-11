@@ -1,0 +1,7 @@
+# Build output and IDE files
+*.class
+target/
+out/
+build/
+.idea/
+*.iml
